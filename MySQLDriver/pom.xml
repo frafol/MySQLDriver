@@ -3,14 +3,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.bencodez</groupId>
-	<artifactId>MySQLDriver</artifactId>
+	<artifactId>CleanSQLDriver</artifactId>
 	<version>1.0</version>
-	<name>MySQLDriver</name>
+	<name>CleanSQLDriver</name>
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<github.global.server>github</github.global.server>
-		<project.build.sourceEncoding>Cp1252</project.build.sourceEncoding>
 	</properties>
 	<distributionManagement>
 		<repository>
@@ -20,24 +18,21 @@
 		</repository>
 	</distributionManagement>
 	<build>
-		<resources>
-			<resource>
-				<directory>Resources</directory>
-				<filtering>true</filtering>
-				<includes>
-					<include>plugin.yml</include>
-					<include>bungee.yml</include>
-					<include>votingpluginversion.yml</include>
-				</includes>
-			</resource>
-			<resource>
-				<directory>Resources</directory>
-				<filtering>false</filtering>
-			</resource>
-		</resources>
 		<sourceDirectory>src</sourceDirectory>
 		<pluginManagement>
 			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>3.2.0</version>
+					<configuration>
+						<archive>
+							<manifestEntries>
+								<Main-Class>com.bencodez.driver.MySQLDriverVelocity</Main-Class>
+							</manifestEntries>
+						</archive>
+					</configuration>
+				</plugin>
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
@@ -76,25 +71,6 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.projectlombok</groupId>
-				<artifactId>lombok-maven-plugin</artifactId>
-				<version>1.18.20.0</version>
-				<executions>
-					<execution>
-						<id>delombok</id>
-						<phase>deploy</phase>
-						<goals>
-							<goal>delombok</goal>
-						</goals>
-						<configuration>
-							<addOutputDirectory>false</addOutputDirectory>
-							<outputDirectory>${project.basedir}/target/delombok</outputDirectory>
-							<sourceDirectory>${project.basedir}/src</sourceDirectory>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
 				<version>3.6.0</version>
@@ -110,37 +86,33 @@
 						</filter>
 					</filters>
 					<relocations>
-						<!-- Lets relocate the shaded API so we dont cause any conflicts with 
-							other plugins -->
+						<relocation>
+							<pattern>de.simonsatorsql.mysqlforvelocity</pattern>
+							<shadedPattern>${project.groupId}.frafol.mysqlforvelocity</shadedPattern>
+						</relocation>
 						<relocation>
 							<pattern>com.bencodez.advancedcore</pattern>
-							<shadedPattern>${project.groupId}.votingplugin.advancedcore</shadedPattern>
+							<shadedPattern>${project.groupId}.frafol.advancedcore</shadedPattern>
 						</relocation>
-						<!-- Lets relocate the shaded API so we dont cause any conflicts with 
-							other plugins -->
 						<relocation>
 							<pattern>net.pl3x.bukkit.chatapi</pattern>
-							<shadedPattern>${project.groupId}.votingplugin</shadedPattern>
+							<shadedPattern>${project.groupId}.frafol</shadedPattern>
 						</relocation>
 						<relocation>
 							<pattern>me.mrten.mysqlapi</pattern>
-							<shadedPattern>${project.groupId}.votingplugin.mysqlapi</shadedPattern>
+							<shadedPattern>${project.groupId}.frafol.mysqlapi</shadedPattern>
 						</relocation>
 						<relocation>
 							<pattern>com.zaxxer.HikariCP</pattern>
-							<shadedPattern>${project.groupId}.votingplugin.HikariCP</shadedPattern>
+							<shadedPattern>${project.groupId}.frafol.HikariCP</shadedPattern>
 						</relocation>
 						<relocation>
 							<pattern>com.zaxxer.hikari</pattern>
-							<shadedPattern>${project.groupId}.votingplugin.hikari</shadedPattern>
+							<shadedPattern>${project.groupId}.frafol.hikari</shadedPattern>
 						</relocation>
 						<relocation>
 							<pattern>xyz.upperlevel.spigot.book</pattern>
-							<shadedPattern>${project.groupId}.votingplugin.upperlevel.book</shadedPattern>
-						</relocation>
-						<relocation>
-							<pattern>org.bstats</pattern>
-							<shadedPattern>${project.groupId}.votingplugin.bstats</shadedPattern>
+							<shadedPattern>${project.groupId}.frafol.upperlevel.book</shadedPattern>
 						</relocation>
 					</relocations>
 				</configuration>
@@ -189,15 +161,9 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.bstats</groupId>
-			<artifactId>bstats-velocity</artifactId>
-			<version>3.0.2</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.33</version>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<version>9.0.0</version>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
